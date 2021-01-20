@@ -62,29 +62,59 @@ def change(register, product_price, paid_money):
     return ret
 '''
 
-# 9) refactor
+# 9) refactor 1
+'''
 def change(register, product_price, paid_money):
-    # 테스트를 통과한 후에는, 코드를 깔끔하게 하려 한다.
-    #if product_price >= paid_money:
-    #    return {}
-    change_sum = paid_money - product_price
-    if change_sum < 0:
+    if product_price > paid_money:
         return {}
-    # 코드를 고친 후에는 테스트를 계속 돌린다.
-    ret = {10: 0, 100: 0, 1000: 0, 10000: 0, 50000: 0}
 
-    wons = sorted(register.keys(), reverse=True)
-    for won in wons:
+    change_sum = paid_money - product_price
+    ret = {50000: 0, 10000: 0, 1000: 0, 100: 0, 10: 0}
+
+    for key in sorted(ret.keys(), reverse=True):
+        while register[key] > 0:
+            if change_sum >= key: # diff 없애기
+                change_sum -= key
+                register[key] -= 1
+                ret[key] += 1
+            else:
+                break
+    return ret
+'''
+
+# refactor 2
+'''
+def change(register, product_price, paid_money):
+    if product_price > paid_money:
+        return {}
+
+    change_sum = paid_money - product_price
+    ret = {50000: 0, 10000: 0, 1000: 0, 100: 0, 10: 0}
+
+    # key -> won 이름 바꾸기
+    for won in sorted(ret.keys(), reverse=True):
         while register[won] > 0:
-            #diff = change_sum - won
-            #if diff >= 0:
-            #if change_sum > won: # 고치고 바로 확인할 수 있다.
             if change_sum >= won:
                 change_sum -= won
                 register[won] -= 1
                 ret[won] += 1
             else:
                 break
+    return ret
+'''
 
+def change(register, product_price, paid_money):
+    if product_price > paid_money:
+        return {}
+
+    change_sum = paid_money - product_price
+    ret = {50000: 0, 10000: 0, 1000: 0, 100: 0, 10: 0}
+
+    # if ~ break 없애기
+    for won in sorted(ret.keys(), reverse=True):
+        while register[won] > 0 and change_sum >= won:
+            change_sum -= won
+            register[won] -= 1
+            ret[won] += 1
     return ret
 #----------------------------------------------------------------
